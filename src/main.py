@@ -158,9 +158,18 @@ async def poll(ctx, question: str, time_limit: int = 15):
 
     await asyncio.sleep(time_limit)
     final_result = await ctx.channel.fetch_message(poll_message.id)
+    yes_count = 0
+    no_count = 0
+
+    for reaction in final_result.reactions:
+        if str(reaction.emoji) == "👍":
+            yes_count = reaction.count - 1  # Subtract 1 to exclude the bot's reaction
+        elif str(reaction.emoji) == "👎":
+            no_count = reaction.count - 1
+
     await final_result.delete()
-    await ctx.send(f"The timed poll with the question '{question}' has ended.")
+    await ctx.send(f"Poll results for the question '{question}':\n👍 - {yes_count} votes\n👎 - {no_count} votes")
 
 
-token = "MTE2Njc4NTc4Mzc5ODE3MzgyNw.Gd4DAT.fR96CwZbIlSUzjJ0kmPqaQrr5GtqCafHgJLwpg"
+token = ""
 bot.run(token)  # Starts the bot
